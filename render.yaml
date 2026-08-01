@@ -1,0 +1,34 @@
+# Render Blueprint -- https://render.com/docs/blueprint-spec
+#
+# One-click deploy: connect this repo on Render and it will provision the
+# service below. After the first deploy, copy the assigned Render URL
+# (e.g. https://visualfind-api.onrender.com) into PUBLIC_BASE_URL and
+# redeploy -- once that's set, ngrok is no longer needed for anyone hitting
+# the deployed app (ngrok is a local-dev-only requirement, see README
+# "Why ngrok Is Needed").
+services:
+  - type: web
+    name: visualfind-api
+    runtime: python
+    plan: free
+    buildCommand: "pip install -r requirements.txt"
+    startCommand: "uvicorn app.main:app --host 0.0.0.0 --port $PORT"
+    envVars:
+      - key: SERPAPI_KEY
+        sync: false # set manually in the Render dashboard -- never commit real keys
+      - key: CLOUDINARY_CLOUD_NAME
+        sync: false
+      - key: CLOUDINARY_API_KEY
+        sync: false
+      - key: CLOUDINARY_API_SECRET
+        sync: false
+      - key: PUBLIC_BASE_URL
+        sync: false # set to this service's own Render URL after first deploy
+      - key: GEMINI_API_KEY
+        sync: false # optional -- AI shopping assistant (v3), 503s cleanly if unset
+      - key: ENABLE_HEADLESS_BROWSER_FALLBACK
+        value: "false" # Playwright's browser binary isn't installed on Render's free tier by default; Tier 3 degrades to a clean failure with this off, per README
+      - key: CORS_ALLOWED_ORIGINS
+        sync: false # set to your deployed frontend's exact origin, e.g. https://visualfind.vercel.app
+      - key: RATE_LIMIT_PER_MINUTE
+        value: "20"

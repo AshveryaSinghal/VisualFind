@@ -1,0 +1,19 @@
+# Optional heavy dependency for OpenClipEmbeddingBackend
+# (app/services/product_index/embedding_backends/open_clip_backend.py).
+#
+# NOT installed by `pip install -r requirements.txt` - torch is a
+# multi-hundred-MB download and a deploy-shape change (see that file's
+# module docstring, and perceptual_hash.py's, for why the default backend
+# deliberately avoids this). Install this file in addition to the base
+# requirements only if you want to switch
+# PRODUCT_INDEX_EMBEDDING_BACKEND to an OpenCLIP model:
+#
+#   pip install -r requirements.txt -r requirements-openclip.txt
+#
+# CPU-only wheels are used by default (no CUDA), since Render's free tier
+# and most local dev machines don't have a GPU. If you do have one and
+# want GPU inference, install torch separately per
+# https://pytorch.org/get-started/locally/ before this file, then set
+# PRODUCT_INDEX_OPENCLIP_DEVICE=cuda.
+torch==2.5.1
+open_clip_torch==2.29.0
